@@ -16,6 +16,7 @@ model Product {
   price       Float
   desc        String
   img         String
+  rating    Float    @default(0)
   productCart ProductCart[]
   orderItems  OrderItem[]
   createdAt   DateTime      @default(now())
