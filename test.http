@@ -5,7 +5,7 @@ GET http://localhost:3000/api/product
 POST http://localhost:3000/api/cart
 # Headers
 Content-Type: application/json
-Cookie: next-auth.session-token=3290a13f-d71f-4e84-9c77-f45df6713fc5
+Cookie: next-auth.session-token=0c54639e-2d10-4b6b-945c-c60e8b75170a
 
 # body
 {
@@ -21,4 +21,16 @@ Cookie: next-auth.session-token=3290a13f-d71f-4e84-9c77-f45df6713fc5
 DELETE http://localhost:3000/api/cartDeleteFull
 Cookie: next-auth.session-token=3290a13f-d71f-4e84-9c77-f45df6713fc5
 
+###
+POST http://localhost:3000/api/rating
+Content-Type: application/json
+Cookie: next-auth.session-token=0c54639e-2d10-4b6b-945c-c60e8b75170a
 
+{
+    "productId": 14,
+    "rating": 4
+}
+
+###
+GET http://localhost:3000/api/rating
+Cookie: next-auth.session-token=0c54639e-2d10-4b6b-945c-c60e8b75170a
