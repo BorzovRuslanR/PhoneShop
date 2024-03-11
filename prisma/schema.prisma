@@ -16,10 +16,25 @@ model Product {
   price       Float
   desc        String
   img         String
+  rating    Float    @default(0)
   productCart ProductCart[]
   orderItems  OrderItem[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+  productRatings ProductRating[]
+}
+
+model ProductRating {
+  id        Int      @id @default(autoincrement())
+  rating    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+
+  @@unique([productId, userId])
 }
 
 model ProductCart {
@@ -107,6 +122,7 @@ model User {
   carts         Cart[]
   accounts      Account[]
   sessions      Session[]
+  productRatings ProductRating[]
 }
 
 model VerificationToken {

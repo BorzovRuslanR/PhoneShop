@@ -21,4 +21,16 @@ Cookie: next-auth.session-token=3290a13f-d71f-4e84-9c77-f45df6713fc5
 DELETE http://localhost:3000/api/cartDeleteFull
 Cookie: next-auth.session-token=3290a13f-d71f-4e84-9c77-f45df6713fc5
 
+###
+POST http://localhost:3000/api/rating
+Content-Type: application/json
+Cookie: next-auth.session-token=09d96b27-ab4a-40a1-916f-2a3c8aba9b89
 
+{
+    "productId": 5,
+    "rating": 4
+}
+
+###
+GET http://localhost:3000/api/rating
+Cookie: next-auth.session-token=09d96b27-ab4a-40a1-916f-2a3c8aba9b89
