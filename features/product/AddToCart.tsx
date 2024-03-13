@@ -8,11 +8,12 @@ import { BarChartHorizontal, Heart } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 type Props = {
-    product: Product
-}
+  product: Product;
+};
 
 export default function AddToCart({ product }: Props) {
   const [quantity, setQuantity] = useState(1);
+  const [isAddedToCart, setIsAddedToCart] = useState(false); // Добавлен ли товар в корзину
 
   const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newQuantity = parseInt(event.target.value, 10);
@@ -30,6 +31,8 @@ export default function AddToCart({ product }: Props) {
         quantity: quantity,
       }),
     });
+
+    setIsAddedToCart(true);
   };
 
   return (
@@ -47,8 +50,8 @@ export default function AddToCart({ product }: Props) {
           <Input type="number" value={quantity} onChange={handleQuantityChange} min={1} />
         </div>
         <div className='flex gap-2'>
-          <Button variant={'submit'} size={'lg'} onClick={handleAddToCart}>
-            Buy
+          <Button variant={'submit'} size={'lg'} onClick={handleAddToCart} disabled={isAddedToCart}>
+            {isAddedToCart ? 'Added' : 'Buy'}
           </Button>
         </div>
       </div>

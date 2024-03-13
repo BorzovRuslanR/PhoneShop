@@ -1,31 +1,25 @@
+import { GET } from '@/app/api/cart/route';
+import { NextResponse } from "next/server";
 import { z } from "zod"
 
-export const cartSchema = z.object({
+type Cart = typeof GET extends () => Promise<NextResponse<infer T>> ? T : never
+
+export type CartDTO = Exclude<Cart, string>
+ 
+export const cartSchema: z.ZodType<CartDTO> = z.object({
   cart: z.array(
     z.object({
       id: z.number(),
-      createdAt: z.string(),
-      updatedAt: z.string(),
       userId: z.string(),
-      ProductCart: z.array(
-        z.object({
-          id: z.number(),
-          productId: z.number(),
-          cartId: z.number(),
-          quantity: z.number(),
-          Product: z.object({
-            id: z.number(),
-            name: z.string(),
-            price: z.number(),
-            desc: z.string(),
-            img: z.string(),
-            createdAt: z.string(),
-            updatedAt: z.string()
-          })
-        })
-      )
+      productId: z.number(),
+      quantity: z.number(),
+      Product: z.object({
+        id: z.number(),
+        name: z.string(),
+        price: z.number(),
+        desc: z.string(),
+        img: z.string(),
+      }),
     })
-  )
+  ),
 });
-
-export type Cart = z.infer<typeof cartSchema>;
