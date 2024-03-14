@@ -5,35 +5,19 @@ import { Product } from '@prisma/client';
 import React, { useState } from 'react'
 // import addToCartAction from './addToCartAction';
 import { BarChartHorizontal, Heart } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { useAddToCart, useGetCart, useUpdateCart } from '../cart/use-cart';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type Props = {
   product: Product;
 };
 
 export default function AddToCart({ product }: Props) {
-  const [quantity, setQuantity] = useState(1);
-  const [isAddedToCart, setIsAddedToCart] = useState(false); // Добавлен ли товар в корзину
-
-  const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newQuantity = parseInt(event.target.value, 10);
-    setQuantity(newQuantity);
-  };
-
-  const handleAddToCart = async () => {
-    await fetch('/api/cart', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        productId: product.id,
-        quantity: quantity,
-      }),
-    });
-
-    setIsAddedToCart(true);
-  };
+  const { cart, isLoading } = useGetCart()
+  const productInCart = cart?.find(cartItem => cartItem.productId === product.id)
+  const { mutate: addToCart } = useAddToCart()
+  const { mutate: updateCart } = useUpdateCart();
+  if (isLoading) return <Skeleton className='h-8 w-full' />
 
   return (
     <>
@@ -46,14 +30,46 @@ export default function AddToCart({ product }: Props) {
             <BarChartHorizontal />
           </Button>
         </div>
-        <div>
-          <Input type="number" value={quantity} onChange={handleQuantityChange} min={1} />
-        </div>
-        <div className='flex gap-2'>
-          <Button variant={'submit'} size={'lg'} onClick={handleAddToCart} disabled={isAddedToCart}>
-            {isAddedToCart ? 'Added' : 'Buy'}
+        {productInCart ? (
+        <div className="flex items-center gap-2">
+          <Button
+            className="w-8 h-8"
+            onClick={() => {
+              addToCart({
+                productId: productInCart.productId,
+                quantity: 1,
+              });
+            }}
+          >
+            +
           </Button>
+          <p>{productInCart.quantity}</p>
+          <Button 
+            className="w-8 h-8" 
+            onClick={() => {
+              updateCart({
+                productId: productInCart.productId,
+                quantity: productInCart.quantity - 1,
+              });
+            }}
+          >-</Button>
         </div>
+      ) : (
+        <div className="flex items-center gap-2 ml-20">
+            <Button
+              size={'lg'}
+              variant={'submit'}
+              onClick={() => {
+                addToCart({
+                  productId: product.id,
+                  quantity: 1,
+                });
+              }}
+            >
+              Buy
+            </Button>
+          </div>
+      )}
       </div>
     </>
   );

@@ -13,12 +13,6 @@ Cookie: next-auth.session-token=3290a13f-d71f-4e84-9c77-f45df6713fc5
     "quantity": 1
 }
 
-###
-GET http://localhost:3000/api/cart
-Cookie: next-auth.session-token=3290a13f-d71f-4e84-9c77-f45df6713fc5
 
-###
-DELETE http://localhost:3000/api/cartDeleteFull
-Cookie: next-auth.session-token=3290a13f-d71f-4e84-9c77-f45df6713fc5
 
 

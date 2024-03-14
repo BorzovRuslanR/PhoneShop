@@ -2,112 +2,95 @@
 
 import { Button } from '@/components/ui/button';
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { Trash2 } from 'lucide-react';
+import { Trash2, Wallet } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react'
-import { Cart, cartSchema } from './cart-schema';
-import { useToast } from '@/components/ui/use-toast';
-import { ToastAction } from '@/components/ui/toast';
+
+import {
+  useAddToCart,
+  useGetCart,
+  useRemoveFromCart,
+  useUpdateCart,
+} from "./use-cart";
+import { Skeleton } from "@/components/ui/skeleton";
+import CartClearDialog from './CartClearDialog';
+import { useRouter } from "next/navigation";
 
 
 export default function CartPage() {
+  const { mutate: addToCart } = useAddToCart();
+  const { mutate: updateCart } = useUpdateCart();
+  const { mutate: removeFromCart } = useRemoveFromCart();
+  const { cart, isLoading, isError } = useGetCart();
+  const router = useRouter();
   const queryClient = useQueryClient();
-  const { toast } = useToast()
-  const { data: cart, isLoading, isError } = useQuery<Cart | undefined>({
-    queryKey: ['cart'],
-    queryFn: () => {
-      return fetch('/api/cart').then((res) => {
-        if (!res.ok) throw new Error('Network response was not ok')
-        return res.json()
-      }).then(data => {
-        return cartSchema.parse(data);
-      }).catch(error => {
-        toast({
-          variant: "destructive",
-          title: "Uh oh! Something went wrong.",
-          description: "There was a problem with your request.",
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
-        })
-        return undefined;
-      })
-    }
-  });
+  let total = 0;
 
-  const handleDeleteCart = async () => {
-    try {
-      const response = await fetch('/api/cartDeleteFull', {
-        method: 'DELETE',
-      });
-      if (!response.ok) {
-        throw new Error('Failed to delete cart');
-      }
-  
-      const data = await response.json();
-  
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
-      toast({
-        title: 'Success',
-        description: 'Cart cleared',
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
+  if (isLoading) 
     return (
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      })
+      <div className="flex flex-col gap-4">
+        <h2 className="text-2xl mt-2">Cart</h2>
+        <Skeleton className="h-14 w-full" />
+        <Skeleton className="h-14 w-full" />
+        <Skeleton className="h-14 w-full" />
+        <Skeleton className="h-14 w-full" />
+      </div>
     );
-  }
+  if (isError) return <div>Error</div>;
+  if (!cart) return <div>Load error</div>;
+  
+  
 
-  if (!cart) {
-    return <div>Load error</div>;
-  }
+  
 
-  const totalItems = cart.cart.length;
+  // const totalItems = cart.cart.length;
 
-  let totalQuantity = 0;
+  // let totalQuantity = 0;
 
-  cart.cart.forEach((cartItem) => {
-    cartItem.ProductCart.forEach((productCartItem) => {
-      totalQuantity += productCartItem.quantity;
-    });
-  });
+  // cart.cart.forEach((cartItem) => {
+  //   cartItem.ProductCart.forEach((productCartItem) => {
+  //     totalQuantity += productCartItem.quantity;
+  //   });
+  // });
 
-  let totalCost = 0;
+  // let totalCost = 0;
 
-  cart.cart.forEach((cartItem) => {
-    cartItem.ProductCart.forEach((productCartItem) => {
-      const { price } = productCartItem.Product;
-      const quantity = productCartItem.quantity;
-      totalCost += price * quantity;
-    });
-  });
+  // cart.cart.forEach((cartItem) => {
+  //   cartItem.ProductCart.forEach((productCartItem) => {
+  //     const { price } = productCartItem.Product;
+  //     const quantity = productCartItem.quantity;
+  //     totalCost += price * quantity;
+  //   });
+  // });
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error</div>;
   if (!cart) return <div>Load error</div>;
 
-  const formattedCart = cart.cart.map(cartItem => {
+  const formattedCart = cart.map((cartItem) => {
     return {
-      productId: cartItem.ProductCart[0].productId,
-      productName: cartItem.ProductCart[0].Product.name,
-      productDesc: cartItem.ProductCart[0].Product.desc,
-      productPrice: cartItem.ProductCart[0].Product.price,
-      quantity: cartItem.ProductCart[0].quantity,
-      productImg: cartItem.ProductCart[0].Product.img
-    }
-  })
+      productId: cartItem.productId,
+      productName: cartItem.Product.name,
+      productDesc: cartItem.Product.desc,
+      productPrice: cartItem.Product.price,
+      quantity: cartItem.quantity,
+      productImg: cartItem.Product.img,
+    };
+  });
+  if (formattedCart.length === 0) {
+    return (
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-8 items-center justify-center">
+        <h2>Cart is empty</h2>
+        <Button
+          onClick={() => {
+            router.push("/");
+          }}
+        >
+          Start shopping
+        </Button>
+      </div>
+    );
+  }
 
 
   return (
@@ -117,12 +100,14 @@ export default function CartPage() {
 
         <div className='flex items-center'>
         <p className="font-bold text-gray-600 text-2xl m-2">
-            Total quantity: <span className="font-bold">{totalQuantity}</span>
+            Total quantity: <span className="font-bold">{}</span>
         </p>
         <p className="font-bold text-gray-600 text-2xl m-2">
-            Total items: <span className="font-bold">{totalItems}</span>
+            Total items: <span className="font-bold">{}</span>
         </p>
-          <Button size={'default'} variant={'destructive'} onClick={handleDeleteCart}>Clear cart</Button>
+          <Button size={'default'} variant={'destructive'} onClick={() => {
+            removeFromCart({});
+          }}>Clear cart</Button>
         </div>
       </div>
       <ul className="flex flex-col gap-4">
@@ -145,36 +130,63 @@ export default function CartPage() {
             <p className="text-gray-500">{cartItem.productDesc}</p>
           </div>
           <p className="text-gray-500 p-4">${cartItem.productPrice}</p>
-          <p className="text-gray-500 p-4">{cartItem.quantity}</p>
-          <Button size={'icon'} variant={'destructive'} onClick={() => {
-            fetch('/api/cart', {
-              method: 'DELETE',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                productId: cartItem.productId
-              })
-            }).then((res) => {
-              if (!res.ok) throw new Error('Network response was not ok')
-              queryClient.invalidateQueries({queryKey: ['cart']})
-              toast({
-                title: 'Success',
-                description: 'Item removed from cart',
-              })
-            })
-          }}>
+          <div className="flex items-center gap-2">
+              <Button
+                className="w-8 h-8"
+                onClick={() => {
+                  addToCart({
+                    productId: cartItem.productId,
+                    quantity: 1,
+                  });
+                }}
+              >
+                +
+              </Button>
+              <p className="text-gray-500">{cartItem.quantity}</p>
+              <Button
+                className="w-8 h-8"
+                onClick={() => {
+                  updateCart({
+                    productId: cartItem.productId,
+                    quantity: cartItem.quantity - 1,
+                  });
+                }}
+              >
+                -
+              </Button>
+            
+          
+          <CartClearDialog
+          onClear={() => {
+            removeFromCart({});
+          }}
+        >
+          <Button
+            variant={"destructive"}
+            className="flex items-center gap-2"
+            size={"icon"}
+            onClick={() => {
+                removeFromCart({
+                  productId: cartItem.productId,
+                });
+              }}
+          >
             <Trash2 />
           </Button>
+        </CartClearDialog>
+        </div>
         </li>
         ))}
       </ul>
       <div className="flex justify-end mt-4 items-center">
         <span className="font-bold text-gray-600 text-2xl mr-2">
-          Total: <span className="font-bold">{totalCost} $</span>
+          Total: <span className="font-bold">{} $</span>
         </span>
-        <Button size={'lg'} variant={'submit'}>
-          Заказать
+        <Button size={'lg'} variant={'submit'} onClick={() => {
+            // router.push("/");
+          }}>
+          Buy
+          <Wallet />
         </Button>
       </div>
     </div>

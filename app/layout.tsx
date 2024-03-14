@@ -9,7 +9,8 @@ import Footer from '@/features/footer/Footer'
 import ScrollToTop from '@/features/scrollToTop/ScrollToTop'
 import MobileAppBar from '@/features/mobileAppBar/MobileAppBar'
 import { useMediaQuery } from 'react-responsive';
-import { Toaster } from '@/components/ui/toaster'
+import { Toaster } from '@/components/ui/toaster';
+
 
 
 
