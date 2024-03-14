@@ -24,7 +24,6 @@ export default function CartPage() {
   const { cart, isLoading, isError } = useGetCart();
   const router = useRouter();
   const queryClient = useQueryClient();
-  let total = 0;
 
   if (isLoading) 
     return (
@@ -36,32 +35,6 @@ export default function CartPage() {
         <Skeleton className="h-14 w-full" />
       </div>
     );
-  if (isError) return <div>Error</div>;
-  if (!cart) return <div>Load error</div>;
-  
-  
-
-  
-
-  // const totalItems = cart.cart.length;
-
-  // let totalQuantity = 0;
-
-  // cart.cart.forEach((cartItem) => {
-  //   cartItem.ProductCart.forEach((productCartItem) => {
-  //     totalQuantity += productCartItem.quantity;
-  //   });
-  // });
-
-  // let totalCost = 0;
-
-  // cart.cart.forEach((cartItem) => {
-  //   cartItem.ProductCart.forEach((productCartItem) => {
-  //     const { price } = productCartItem.Product;
-  //     const quantity = productCartItem.quantity;
-  //     totalCost += price * quantity;
-  //   });
-  // });
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error</div>;
@@ -92,6 +65,13 @@ export default function CartPage() {
     );
   }
 
+  let total = 0;
+
+  formattedCart.forEach(cartItem => {
+    const itemTotal = cartItem.productPrice * cartItem.quantity;
+    total += itemTotal;
+  });
+
 
   return (
     <div className="container mx-auto py-8">
@@ -99,15 +79,16 @@ export default function CartPage() {
         <h2 className="text-2xl font-bold mb-4">Cart</h2>
 
         <div className='flex items-center'>
-        <p className="font-bold text-gray-600 text-2xl m-2">
-            Total quantity: <span className="font-bold">{}</span>
-        </p>
-        <p className="font-bold text-gray-600 text-2xl m-2">
-            Total items: <span className="font-bold">{}</span>
-        </p>
-          <Button size={'default'} variant={'destructive'} onClick={() => {
+        
+        <CartClearDialog
+          onClear={() => {
             removeFromCart({});
-          }}>Clear cart</Button>
+          }}
+        ><Button 
+            size={'default'} 
+            variant={'destructive'} 
+            >Clear cart</Button>
+        </CartClearDialog>
         </div>
       </div>
       <ul className="flex flex-col gap-4">
@@ -129,7 +110,7 @@ export default function CartPage() {
             <h3 className="text-lg font-semibold">{cartItem.productName}</h3>
             <p className="text-gray-500">{cartItem.productDesc}</p>
           </div>
-          <p className="text-gray-500 p-4">${cartItem.productPrice}</p>
+          <p className="text-gray-500 p-4">${cartItem.productPrice * cartItem.quantity}</p>
           <div className="flex items-center gap-2">
               <Button
                 className="w-8 h-8"
@@ -154,13 +135,6 @@ export default function CartPage() {
               >
                 -
               </Button>
-            
-          
-          <CartClearDialog
-          onClear={() => {
-            removeFromCart({});
-          }}
-        >
           <Button
             variant={"destructive"}
             className="flex items-center gap-2"
@@ -173,14 +147,14 @@ export default function CartPage() {
           >
             <Trash2 />
           </Button>
-        </CartClearDialog>
+        
         </div>
         </li>
         ))}
       </ul>
       <div className="flex justify-end mt-4 items-center">
         <span className="font-bold text-gray-600 text-2xl mr-2">
-          Total: <span className="font-bold">{} $</span>
+          Total: <span className="font-bold">{total} $</span>
         </span>
         <Button size={'lg'} variant={'submit'} onClick={() => {
             // router.push("/");
@@ -192,3 +166,4 @@ export default function CartPage() {
     </div>
   );
 }
+
