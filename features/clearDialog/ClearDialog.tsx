@@ -13,11 +13,13 @@ import {
 
 type Props = {
   onClear: () => void;
+  dialogDescription: string;
 };
 
-export default function CartClearDialog({
+export default function ClearDialog({
   children,
   onClear,
+  dialogDescription
 }: PropsWithChildren<Props>) {
   return (
     <AlertDialog>
@@ -27,10 +29,10 @@ export default function CartClearDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Are you absolutely sure?
+          Are you absolutely sure?
           </AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently clear your favorites.
+          This action cannot be undone. This will permanently clear your {dialogDescription}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

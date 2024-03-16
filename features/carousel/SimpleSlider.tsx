@@ -5,10 +5,12 @@ import React from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import "@/features/carousel/slick-custom.css";
 
 interface Props {
     imageUrls: string[];
   }
+
   
   class SimpleSlider extends React.Component<Props> {
     constructor(props: Props) {
@@ -26,7 +28,7 @@ interface Props {
             autoplay: true,
             speed: 2000,
             autoplaySpeed: 6000,
-            cssEase: "linear"
+            cssEase: "linear",
           };
 
 

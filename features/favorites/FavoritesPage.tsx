@@ -6,9 +6,9 @@ import { Trash2, Wallet } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react'
 import { Skeleton } from "@/components/ui/skeleton";
-import FavoritesClearDialog from '@/features/favorites/FavoritesClearDialog';
 import { useRouter } from "next/navigation";
 import { useGetFavorites, useRemoveFromFavorites } from './use-favorites';
+import ClearDialog from '../clearDialog/ClearDialog';
 
 
 
@@ -51,7 +51,8 @@ export default function FavoritesPage() {
 
         <div className='flex items-center'>
         
-        <FavoritesClearDialog
+        <ClearDialog
+          dialogDescription="favorites"
           onClear={() => {
             removeFromFavorites({});
           }}
@@ -59,7 +60,7 @@ export default function FavoritesPage() {
             size={'default'} 
             variant={'destructive'} 
             >Clear</Button>
-        </FavoritesClearDialog>
+        </ClearDialog>
         </div>
       </div>
       <ul className="flex flex-col gap-4">

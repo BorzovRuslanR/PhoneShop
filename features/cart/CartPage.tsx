@@ -13,8 +13,8 @@ import {
   useUpdateCart,
 } from "./use-cart";
 import { Skeleton } from "@/components/ui/skeleton";
-import CartClearDialog from './CartClearDialog';
 import { useRouter } from "next/navigation";
+import ClearDialog from '../clearDialog/ClearDialog';
 
 
 export default function CartPage() {
@@ -80,7 +80,8 @@ export default function CartPage() {
 
         <div className='flex items-center'>
         
-        <CartClearDialog
+        <ClearDialog
+          dialogDescription="cart"
           onClear={() => {
             removeFromCart({});
           }}
@@ -88,7 +89,7 @@ export default function CartPage() {
             size={'default'} 
             variant={'destructive'} 
             >Clear cart</Button>
-        </CartClearDialog>
+        </ClearDialog>
         </div>
       </div>
       <ul className="flex flex-col gap-4">
@@ -157,7 +158,7 @@ export default function CartPage() {
           Total: <span className="font-bold">{total} $</span>
         </span>
         <Button size={'lg'} variant={'submit'} onClick={() => {
-            // router.push("/");
+            router.push("/orders");
           }}>
           Buy
           <Wallet />
