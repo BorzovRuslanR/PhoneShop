@@ -20,7 +20,19 @@ model Product {
   orderItems OrderItem[]
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
-  Favorites  Favorites[]
+  favorites  Favorites[]
+  Manufacturer   Manufacturer @relation(fields: [manufacturerId], references: [id])
+  manufacturerId Int
+
+  // @@map ("products") переименование названия таблиц
+}
+
+model Manufacturer {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  name      String
+  Product   Product[]
 }
 
 model Favorites {
@@ -111,7 +123,7 @@ model User {
   carts         Cart[]
   accounts      Account[]
   sessions      Session[]
-  Favorites     Favorites[]
+  favorites     Favorites[]
 }
 
 model VerificationToken {

@@ -83,6 +83,9 @@ export async function GET() {
             email
           }
         },
+        orderBy: {
+          createdAt: 'asc'
+        },
         select: {
           id: true,
           quantity: true,

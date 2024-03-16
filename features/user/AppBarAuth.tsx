@@ -5,7 +5,7 @@ import { signIn, useSession, signOut } from 'next-auth/react';
 import { ThemeToggler } from '@/components/ThemeToggler';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import React, { useEffect, useState } from 'react'
-import { ShoppingCart } from 'lucide-react';
+import { Heart, ShoppingCart } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import {
   DropdownMenu,
@@ -19,7 +19,8 @@ import Link from 'next/link';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/components/ui/use-toast';
 import { ToastAction } from '@/components/ui/toast';
-import { Cart, cartSchema } from '../cart/cart-schema';
+import { Cart, CartDTO, cartSchema } from '../cart/cart-schema';
+import { useGetFavorites } from '../favorites/use-favorites';
 
 
 
@@ -28,7 +29,8 @@ export default function AppBarAuth() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { toast } = useToast()
-  const { data: cart, isLoading, isError } = useQuery<Cart | undefined>({
+  const { favorites, isLoading: favoritesLoading } = useGetFavorites();
+  const { data: cart, isLoading, isError } = useQuery<CartDTO | undefined>({
     queryKey: ['cart'],
     queryFn: () => {
       return fetch('/api/cart').then((res) => {
@@ -66,6 +68,17 @@ export default function AppBarAuth() {
     return (
       <div className='flex gap-4'>
         <div className="relative">
+          {
+            (favorites && favorites?.length > 0 ) ? 
+            <Button 
+              size={'icon'}
+              variant={'secondary'}
+              onClick={() => router.push('/favorites')}
+              className='text-red-500 bg-slate-300 mr-4 dark:hover:bg-cyan-300 hover:bg-cyan-300'
+            >
+              <Heart />
+            </Button> : null
+          }
           <Button size={'icon'} onClick={() => {
             router.push('/cart');
           }}>

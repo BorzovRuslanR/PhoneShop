@@ -1,18 +1,17 @@
-import { GET } from '@/app/api/cart/route';
+import { GET } from '@/app/api/favorites/route';
 import { NextResponse } from "next/server";
 import { z } from "zod"
 
-export type Cart = typeof GET extends () => Promise<NextResponse<infer T>> ? T : never
+type Favorite = typeof GET extends () => Promise<NextResponse<infer T>> ? T : never
 
-export type CartDTO = Exclude<Cart, string>
+export type FavoritesDTO = Exclude<Favorite, string>
  
-export const cartSchema: z.ZodType<CartDTO> = z.object({
-  cart: z.array(
+export const favoritesSchema: z.ZodType<FavoritesDTO> = z.object({
+  favorites: z.array(
     z.object({
       id: z.number(),
       userId: z.string(),
       productId: z.number(),
-      quantity: z.number(),
       Product: z.object({
         id: z.number(),
         name: z.string(),
