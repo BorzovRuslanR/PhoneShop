@@ -9,10 +9,22 @@ Cookie: next-auth.session-token=3290a13f-d71f-4e84-9c77-f45df6713fc5
 
 # body
 {
-    "productId": 1,
+    "productId": 8,
     "quantity": 1
 }
+###
+POST http://localhost:3000/api/rating
 
+Content-Type: application/json
+Cookie: next-auth.session-token=53b1354e-afb7-4261-b659-ea4aefdaf8f1
 
+  {
+  "rating": 4,
+  "productId": 8,
+  "userId": "cltpzojya0000oh03fi97yq15"
+}  
 
+### 
+GET http://localhost:3000/api/rating
 
+Cookie: next-auth.session-token=53b1354e-afb7-4261-b659-ea4aefdaf8f1

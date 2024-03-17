@@ -50,11 +50,13 @@ export default function CartPage() {
       productImg: cartItem.Product.img,
     };
   });
+
   if (formattedCart.length === 0) {
     return (
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col gap-8 items-center justify-center">
-        <h2>Cart is empty</h2>
+      <div className="flex flex-col gap-4 items-center justify-center">
+        <h2 className='m-4'>Cart is empty</h2>
         <Button
+          className='m-4'
           onClick={() => {
             router.push("/");
           }}

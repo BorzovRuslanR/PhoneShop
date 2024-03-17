@@ -3,10 +3,18 @@
 import React from 'react'
 import { useState } from 'react'
 import { FaStar } from 'react-icons/fa'
+import { useRouter } from "next/navigation";
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useAddToRating } from './use-rating';
 
 export default function RatingStars() {
   const [rating, setRating] = useState<number | null>(null);
   const [hover, setHover] = useState<number | null>(null);
+  const { mutate: addToRating } = useAddToRating()
+
+
+
+  
   return (
     <div className='flex'>
         {[...Array(5)].map((star, index) => {
