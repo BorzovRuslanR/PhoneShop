@@ -1,14 +1,27 @@
 // const PrismaClient = require('@prisma/client').PrismaClient
-import { PrismaClient } from '@prisma/client'
-const db = new PrismaClient()
+import { PrismaClient } from "@prisma/client";
+const db = new PrismaClient();
 
 async function start() {
-
-    const apple = await db.manufacturer.create({
-        data: {
-            name: 'Apple'
-        }
-    })
+    
+  /** @type {import("@prisma/client").Manufacturer | null} */
+  let apple = await db.manufacturer.findFirst({
+    where: {
+      name: "Apple",
+    },
+  });
+  if (apple && process.env.NODE_ENV === "production") {
+    console.log("Data already exists, skipping seed");
+    return;
+  }
+  if (!apple) {
+    apple = await db.manufacturer.create({
+      data: {
+        name: "Apple",
+      },
+    });
+  }
+    
 
 
 

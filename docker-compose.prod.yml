@@ -1,0 +1,114 @@
+version: '3'
+# Docker swarm
+
+services:
+  app:
+    image: registry.gitlab.com/russelgroup/eshoptelephone
+    container_name: app
+    command: sh -c "npm run db:migrate:deploy && npm run db:seed && npm start"
+    ports:
+      - 3000:3000
+    env_file:
+      - .env.production
+    depends_on:
+      - db
+    networks:
+      - app_network
+    restart: unless-stopped  
+
+  db:
+    image: 'postgres:latest'
+    env_file:
+      - .env.production
+    networks:
+      - app_network
+    restart: unless-stopped
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  db_data:
+
+
+# version: '3'
+
+# services:
+#   app:
+#     image: registry.gitlab.com/russelgroup/eshoptelephone:latest
+#     container_name: app
+#     command: sh -c "npx prisma migrate deploy && npm start"
+#     ports:
+#       - 3000:3000
+#     healthcheck:
+#       test: wget --no-verbose --tries=1 --spider http://localhost:3000/api/product || exit 1
+#       interval: 10s
+#       timeout: 10s
+#       retries: 5
+#       start_period: 30s
+#     env_file:
+#       - .env.production
+#     depends_on:
+#       db:
+#         condition: service_healthy
+#     networks:
+#       - app_network
+#     restart: unless-stopped  
+#     labels:
+#       - autoheal=true
+
+#   autoheal:
+#     image: willfarrell/autoheal
+#     container_name: autoheal
+#     restart: always
+#     volumes:
+#       - /var/run/docker.sock:/var/run/docker.sock
+#     networks:
+#       - app_network
+#     environment:
+#       - AUTOHEAL_INTERVAL=30
+#       - AUTOHEAL_START_PERIOD=60
+#       - DOCKER_SOCK=/var/run/docker.sock
+
+#   db:
+#     image: 'postgres:latest'
+#     env_file:
+#       - .env.production
+#     networks:
+#       - app_network
+#     restart: unless-stopped
+#     volumes:
+#       - db_data:/var/lib/postgresql/data
+#     healthcheck:
+#       test: ['CMD', 'pg_isready']
+#       interval: 5s
+#       timeout: 5s
+#       retries: 5
+
+#   adminer:
+#     image: adminer
+#     restart: always
+#     ports:
+#       - 8080:8080
+#     networks:
+#       - app_network
+
+# networks:
+#   app_network:
+#     driver: bridge
+
+# volumes:
+#   db_data:
+#   certbot_data:
+#   nginx_html:

@@ -1,0 +1,9 @@
+/node_modules
+docker-compose.dev.yml
+docker-compose.prod.yml
+docker-compose.test.yml
+Dockerfile
+.env.example
+.gitignore
+.env
+/secrets

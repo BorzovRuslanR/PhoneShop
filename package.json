@@ -10,7 +10,11 @@
     "db:migrate": "prisma migrate dev",
     "db:gen": "prisma generate",
     "db:studio": "prisma studio",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "upload-files": "bash ./scripts/upload-files.sh",
+    "docker:build": "bash ./scripts/docker-build.sh",
+    "docker:deploy": "bash ./scripts/deploy.sh",
+    "deploy": "pnpm upload-files && pnpm docker:build && pnpm docker:deploy"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
@@ -29,6 +33,7 @@
     "clsx": "^2.1.0",
     "lucide-react": "^0.323.0",
     "next": "14.1.0",
+    "prisma": "^5.11.0",
     "next-auth": "^4.24.7",
     "next-themes": "^0.2.1",
     "pnpm": "^8.15.5",
@@ -54,11 +59,10 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "14.1.0",
     "postcss": "^8.4.38",
-    "prisma": "^5.11.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.4.3"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "node prisma/seed.mjx"
   }
 }
