@@ -7,13 +7,15 @@ import {z} from 'zod';
 
 export async function POST(req: NextRequest) {
   const session = await getAuthSession();
+  console.log(session);
+  
   if (session?.user?.email) {
     const body = await req.json();
     const email = session.user.email;
     const bodySchema = z.object({
         rating: z.number().int().min(1).max(5),
         productId: z.number().gt(0),
-        userId: z.string()
+        // userId: z.string()
       });
     const parsedBody = await bodySchema.safeParseAsync(
       body
@@ -37,7 +39,7 @@ export async function POST(req: NextRequest) {
             rating: parsedBody.data.rating,
             user: {
               connect: {
-                id: parsedBody.data.userId,
+                email
               },
             },
             product: {

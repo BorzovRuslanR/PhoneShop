@@ -48,11 +48,10 @@ import {
   export function useAddToRating() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
-    const router = useRouter();
+    // const router = useRouter();
     return useMutation({
       mutationFn: async (body: {
         rating: number;
-        userId: number;
         productId: number;
       }) => {
         const response = await fetch("/api/rating", {

@@ -26,7 +26,7 @@ export default function ProductCard({product}: Props) {
               </CardContent>
                 <CardContent className='flex justify-between items-center gap-2 lg:gap-10 md:gap-6'>
                   <CardContent className='text-black font-bold border border-red-500 rounded inline-block p-2 m-2 lg:m-6 dark:text-white text-nowrap'>{product.price} $</CardContent>
-                  <CardContent className='flex justify-end items-center'><RatingStars /></CardContent>
+                  <CardContent className='flex justify-end items-center'><RatingStars product={product} /></CardContent>
                 </CardContent>
               <CardFooter className="flex justify-between">
                 <AddToCart product={product} />
