@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "db:migrate": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
     "db:gen": "prisma generate",
     "db:studio": "prisma studio",
     "db:seed": "prisma db seed",
@@ -63,6 +64,6 @@
     "typescript": "^5.4.3"
   },
   "prisma": {
-    "seed": "node prisma/seed.mjx"
+    "seed": "node prisma/seed.mjs"
   }
 }

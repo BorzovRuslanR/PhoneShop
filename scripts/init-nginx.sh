@@ -9,6 +9,7 @@ ssh prod "apt-get install nginx -y"
 
 # Copy the Nginx configuration file to the remote host prod (for proxy to the Next.js app)
 scp nginx/nginx.conf prod:/etc/nginx/sites-enabled/default
+ssh prod "systemctl restart nginx"
 
 # Install certbot for HTTPS
 ssh prod "snap install core; snap refresh core"
