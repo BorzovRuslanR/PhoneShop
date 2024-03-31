@@ -15,6 +15,9 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import ClearDialog from '../clearDialog/ClearDialog';
+import CreateOrderDialog from '../order/CreateOrderDialog';
+
+
 
 
 export default function CartPage() {
@@ -159,12 +162,8 @@ export default function CartPage() {
         <span className="font-bold text-gray-600 text-2xl mr-2">
           Total: <span className="font-bold">{total} $</span>
         </span>
-        <Button size={'lg'} variant={'submit'} onClick={() => {
-            router.push("/orders");
-          }}>
-          Buy
-          <Wallet />
-        </Button>
+
+        <CreateOrderDialog />
       </div>
     </div>
   );

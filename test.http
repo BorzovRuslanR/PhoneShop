@@ -25,4 +25,3 @@ Cookie: next-auth.session-token=150a69e3-c577-4147-9287-0cea494f64b4
 
 ### 
 GET http://localhost:3000/api/rating
-Cookie: next-auth.session-token=53b1354e-afb7-4261-b659-ea4aefdaf8f1

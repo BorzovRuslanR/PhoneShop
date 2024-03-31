@@ -17,12 +17,17 @@ export default function ProductCard({product}: Props) {
                 <CardDescription>{product.desc}</CardDescription>
               </CardHeader>
               <CardContent>
-                <Image
-                 src={product.img} 
-                 alt={product.name} 
-                 width={400} 
-                 height={500}
-                 />
+                <div className='relative h-60 lg:h-72'>
+                  <Image
+                   src={product.img}
+                   alt={product.name}
+                  //  width={400}
+                  //  height={500}
+                  fill
+                  className='object-contain'
+                  sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                   />
+                </div>
               </CardContent>
                 <CardContent className='flex justify-between items-center gap-2 lg:gap-10 md:gap-6'>
                   <CardContent className='text-black font-bold border border-red-500 rounded inline-block p-2 m-2 lg:m-6 dark:text-white text-nowrap'>{product.price} $</CardContent>

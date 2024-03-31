@@ -41,9 +41,10 @@ interface Props {
               <Image
                 src={imageUrl}
                 alt={`Slide ${index + 1}`}
-                layout="fill"
-                objectFit="contain"
+                // layout="fill"
+                // objectFit="contain"
                 className="object-cover"
+                fill
               />
             </div>
           </div>

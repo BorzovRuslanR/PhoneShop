@@ -8,22 +8,19 @@ import {z} from 'zod';
 export async function POST(req: NextRequest) {
   const session = await getAuthSession();
   console.log(session);
-  
+
   if (session?.user?.email) {
     const body = await req.json();
     const email = session.user.email;
     const bodySchema = z.object({
-        rating: z.number().int().min(1).max(5),
-        productId: z.number().gt(0),
-        // userId: z.string()
-      });
-    const parsedBody = await bodySchema.safeParseAsync(
-      body
-    );
+      rating: z.number().int().min(1).max(5),
+      productId: z.number().gt(0),
+    });
+    const parsedBody = await bodySchema.safeParseAsync(body);
     if (parsedBody.success) {
       let ratingFromDb: Rating | null = null;
       try {
-        const rating = await db.rating.findFirst({
+        const existingRating = await db.rating.findFirst({
           where: {
             user: {
               email,
@@ -31,24 +28,35 @@ export async function POST(req: NextRequest) {
             productId: parsedBody.data.productId,
           },
         });
-        if (rating) {
-          ratingFromDb = rating
-        } else
-        ratingFromDb = await db.rating.create({
-          data: {
-            rating: parsedBody.data.rating,
-            user: {
-              connect: {
-                email
+
+        if (existingRating) {
+          // Если оценка уже существует, обновляем ее значение
+          ratingFromDb = await db.rating.update({
+            where: {
+              id: existingRating.id,
+            },
+            data: {
+              rating: parsedBody.data.rating,
+            },
+          });
+        } else {
+          // Если оценка не существует, создаем новую запись
+          ratingFromDb = await db.rating.create({
+            data: {
+              rating: parsedBody.data.rating,
+              user: {
+                connect: {
+                  email,
+                },
+              },
+              product: {
+                connect: {
+                  id: parsedBody.data.productId,
+                },
               },
             },
-            product: {
-              connect: {
-                id: parsedBody.data.productId,
-              },
-            },
-          },
-        });
+          });
+        }
       } catch (error) {
         return new Response("Wrong product ID", {
           status: 409,
@@ -68,29 +76,17 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET() {
-    const session = await getAuthSession()
-      
-      if (session?.user?.email) {
-        const email = session.user.email
-        const rating = await db.rating.findMany({
-          where: {
-            user: {
-              email
-            }
-          },
-          select: {
-            id: true,
-            productId: true,
-            userId: true,
-            rating: true,
-          },
-        });
+  const rating = await db.rating.findMany({
+    select: {
+      id: true,
+      productId: true,
+      userId: true,
+      rating: true,
+    },
+  });
         return NextResponse.json<{ rating: typeof rating }>({
           rating,
         });
       }
-      return new NextResponse<string>("Auth required", {
-        status: 401,
-      });
-    }
+      
   

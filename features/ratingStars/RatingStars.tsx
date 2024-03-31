@@ -3,7 +3,6 @@
 import React from "react";
 import { useState } from "react";
 import { FaStar } from "react-icons/fa";
-import { useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAddToRating } from "./use-rating";
 import { Product } from "@prisma/client";
@@ -28,13 +27,6 @@ export default function RatingStars({ product }: Props) {
               name="rating"
               value={currentRating}
               className="hidden"
-              onClick={() => {
-                console.log("Onclick");
-                addToRating({
-                  rating: currentRating,
-                  productId: product.id,
-                });
-              }}
             />
             <FaStar
               onClick={() => {

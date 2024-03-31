@@ -5,7 +5,7 @@ import {
   } from "@tanstack/react-query";
   import { RatingDTO, ratingSchema } from "./rating-shema";
   import { useToast } from "@/components/ui/use-toast";
-  import { useRouter } from "next/navigation";
+  
   
 
 
@@ -16,7 +16,7 @@ import {
       isLoading,
       isError,
     } = useQuery<RatingDTO | undefined>({
-      queryKey: ["rating"],
+      queryKey: ["ratings"],
       queryFn: () => {
         return fetch("/api/rating")
           .then((res) => {
@@ -29,7 +29,7 @@ import {
             return res.json();
           })
           .then((data) => {
-            return ratingSchema.parse(data);
+            return data.map((item: RatingDTO) => ratingSchema.parse(item));
           })
           .catch((error) => {
             if (error.message !== "Unauthorized")

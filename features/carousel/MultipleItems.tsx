@@ -45,8 +45,10 @@ class MultipleItems extends React.Component<Props> {
               <Image
                 src={imageUrl}
                 alt={`Slide ${index + 1}`}
-                layout="fill"
-                objectFit="cover"
+                fill
+                className="object-cover"
+                // layout="fill"
+                // objectFit="cover"
               />
             </div>
           </div>
