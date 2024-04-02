@@ -98,3 +98,51 @@ export function useGetOrder() {
   });
   return { order: order?.order, isLoading, isError };
 }
+
+export function useRemoveFromOrder() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      orderId,
+    }: {
+      orderId?: number;
+    }) => {
+      const response = await fetch("/api/order", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ orderId }),
+      });
+      if (!response.ok) {
+        return Promise.reject(
+          new Error("Network response was not ok")
+        );
+      }
+      return response.json();
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+    onSuccess: (data, orderId) => {
+      queryClient.invalidateQueries({
+        queryKey: ["order"],
+      });
+      if (orderId)
+        toast({
+          title: "Success",
+          description: "Item removed from order list",
+        });
+      else
+        toast({
+          title: "Success",
+          description: "Order cleared",
+        });
+    },
+  });
+}

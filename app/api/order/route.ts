@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
             }
           },
           orderBy: {
-            createdAt: 'asc'
+            createdAt: 'desc'
           },
           select: {
             id: true,
@@ -109,4 +109,77 @@ export async function POST(req: NextRequest) {
       });
     }
 
-  
+    
+    export async function DELETE(req: NextRequest) {
+      const session = await getAuthSession();
+    
+      if (session?.user?.email) {
+        const email = session.user.email;
+        const body = await req.json();
+        const bodySchema = z.object({
+          orderId: z.number().gt(0),
+        });
+        const parsedBody = await bodySchema.safeParseAsync(body);
+    
+        if (parsedBody.success) {
+          const user = await db.user.findUnique({
+            where: {
+              email,
+            },
+          });
+    
+          if (user) {
+            const order = await db.order.findFirst({
+              where: {
+                id: parsedBody.data.orderId,
+                userId: user.id,
+              },
+              include: {
+                items: true,
+              },
+            });
+    
+            if (order) {
+              await db.orderItem.deleteMany({
+                where: {
+                  orderId: order.id,
+                },
+              });
+    
+              await db.order.delete({
+                where: {
+                  id: order.id,
+                },
+              });
+    
+              return new Response(JSON.stringify({ message: "Order and associated items deleted successfully" }), {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              });
+            } else {
+              return new Response(JSON.stringify({ message: "Order not found" }), {
+                status: 404,
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              });
+            }
+          } else {
+            return new Response(JSON.stringify({ message: "Auth required" }), {
+              status: 401,
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+          }
+        }
+      }
+    
+      return new Response(JSON.stringify({ message: "Auth required" }), {
+        status: 401,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    }

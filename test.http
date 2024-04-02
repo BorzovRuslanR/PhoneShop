@@ -34,3 +34,12 @@ Cookie: next-auth.session-token=0415c621-d99e-4616-9c97-0e6dda3a899a
 {
   "userId": "cltpzojya0000oh03fi97yq15"
 }
+
+###
+DELETE http://localhost:3000/api/order
+Content-Type: application/json
+Cookie: next-auth.session-token=0415c621-d99e-4616-9c97-0e6dda3a899a
+
+{
+  "orderId": 10
+}
