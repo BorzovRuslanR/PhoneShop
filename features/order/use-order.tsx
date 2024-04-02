@@ -7,6 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { ToastAction } from "@/components/ui/toast";
 import { Order } from "@prisma/client";
+import { OrderDTO, orderSchema } from "./order-schema";
 
 
 export function useCreateOrder() {
@@ -54,4 +55,46 @@ export function useCreateOrder() {
       });
     }
   })
+}
+
+export function useGetOrder() {
+  const { toast } = useToast();
+  const {
+    data: order,
+    isLoading,
+    isError,
+  } = useQuery<OrderDTO | undefined>({
+    queryKey: ["order"],
+    queryFn: () => {
+      return fetch("/api/order")
+        .then((res) => {
+          if (!res.ok) {
+            if (res.status === 401) {
+              throw new Error("Unauthorized");
+            }
+            throw new Error("Network response was not ok");
+          }
+          return res.json();
+        })
+        .then((data) => {
+          try {
+            return orderSchema.parse(data);
+          } catch (error) {
+            console.error('Error parsing data:', error);
+            throw error; 
+          }
+        })
+        .catch((error) => {
+          if (error.message !== "Unauthorized") {
+            toast({
+              title: "Error",
+              description: error.message,
+              variant: "destructive",
+            });
+          }
+          return undefined;
+        });
+    },
+  });
+  return { order: order?.order, isLoading, isError };
 }

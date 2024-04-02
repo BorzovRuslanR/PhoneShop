@@ -1,6 +1,5 @@
 import { getAuthSession } from '@/lib/auth';
 import { db } from '@/prisma/db';
-import { Cart } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import {z} from 'zod';
 import { Order, OrderItem } from '@prisma/client'
@@ -69,3 +68,45 @@ export async function POST(req: NextRequest) {
       status: 401,
     });
   }
+
+
+  export async function GET() {
+    const session = await getAuthSession()
+      
+      if (session?.user?.email) {
+        const email = session.user.email
+        const order = await db.order.findMany({
+          where: {
+            User: {
+              email
+            }
+          },
+          orderBy: {
+            createdAt: 'asc'
+          },
+          select: {
+            id: true,
+            userId: true,
+            total: true,
+            address: true,
+            items: {
+              select: {
+                id: true,
+                productId: true,
+                price: true,
+                orderId: true,
+                quantity: true
+              }
+            }
+          },
+        });
+        return NextResponse.json<{ order: typeof order }>({
+          order,
+        });
+      }
+      return new NextResponse<string>("Auth required", {
+        status: 401,
+      });
+    }
+
+  
