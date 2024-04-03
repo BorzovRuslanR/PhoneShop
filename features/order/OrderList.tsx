@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 
 
 export default function OrderList() {
-  const { order, isLoading, isError } = useGetOrder();
+  const { orders, isLoading, isError } = useGetOrder();
   const { mutate: removeFromOrder } = useRemoveFromOrder();
 
   if (isLoading) {
@@ -21,10 +21,11 @@ export default function OrderList() {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Order List</h1>
-      {order && order.map((orderItem) => (
+      {orders && orders.map((orderItem) => (
         <div key={orderItem.id} className="border border-gray-300 rounded p-4 mb-4">
           <p className="font-bold">Order ID: {orderItem.id}</p>
           <p>User ID: {orderItem.userId}</p>
+          <p>Date: {new Date(orderItem.createdAt).toLocaleDateString()} {new Date(orderItem.createdAt).toLocaleTimeString()}</p>
           <p>Total price: {orderItem.total} $</p>
           <p>Address: {orderItem.address}</p>
           <div>

@@ -89,6 +89,7 @@ export async function POST(req: NextRequest) {
             userId: true,
             total: true,
             address: true,
+            createdAt: true,
             items: {
               select: {
                 id: true,

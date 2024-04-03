@@ -13,6 +13,7 @@ export const orderSchema = z.object({
       userId: z.string(),
       total: z.number(),
       address: z.string(),
+      createdAt: z.string(),
       items: z.array(
         z.object({
           id: z.number(),

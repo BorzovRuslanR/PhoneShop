@@ -60,10 +60,10 @@ export function useCreateOrder() {
 export function useGetOrder() {
   const { toast } = useToast();
   const {
-    data: order,
+    data: orders,
     isLoading,
     isError,
-  } = useQuery<OrderDTO | undefined>({
+  } = useQuery({
     queryKey: ["order"],
     queryFn: () => {
       return fetch("/api/order")
@@ -96,7 +96,7 @@ export function useGetOrder() {
         });
     },
   });
-  return { order: order?.order, isLoading, isError };
+  return { orders: orders?.order, isLoading, isError };
 }
 
 export function useRemoveFromOrder() {
