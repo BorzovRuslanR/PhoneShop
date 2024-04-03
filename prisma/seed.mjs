@@ -1,3 +1,4 @@
+// @ts-check
 // const PrismaClient = require('@prisma/client').PrismaClient
 import { PrismaClient } from "@prisma/client";
 const db = new PrismaClient();
@@ -10,6 +11,17 @@ async function start() {
       name: "Apple",
     },
   });
+  let xiaomi = await db.manufacturer.findFirst({
+    where: {
+      name: "Xiaomi",
+    },
+  });
+  let samsung = await db.manufacturer.findFirst({
+    where: {
+      name: "Samsung",
+    },
+  });
+  
   if (apple && process.env.NODE_ENV === "production") {
     console.log("Data already exists, skipping seed");
     return;
@@ -18,6 +30,20 @@ async function start() {
     apple = await db.manufacturer.create({
       data: {
         name: "Apple",
+      },
+    });
+  }
+  if (!xiaomi) {
+    xiaomi = await db.manufacturer.create({
+      data: {
+        name: "Xiaomi",
+      },
+    });
+  }
+  if (!samsung) {
+    samsung = await db.manufacturer.create({
+      data: {
+        name: "Samsung",
       },
     });
   }
@@ -86,6 +112,42 @@ async function start() {
             desc: "128GB nanoSim/eSim Green",
             price: 740,
             manufacturerId: apple.id
+        }
+    })
+    await db.product.create({
+        data: {
+            name: "Xiaomi 14 Ultra",
+            img: "/products/Xiaomi14Ultra.jpg",
+            desc: "512GB nanoSim/eSim Space Black",
+            price: 2055,
+            manufacturerId: xiaomi.id
+        }
+    })
+    await db.product.create({
+        data: {
+            name: "Galaxy A55 5G",
+            img: "/products/Galaxy A55.jpg.webp",
+            desc: "128GB nanoSim/eSim",
+            price: 640,
+            manufacturerId: samsung.id
+        }
+    })
+    await db.product.create({
+        data: {
+            name: "Xiaomi 14",
+            img: "/products/Xiaomi14Ultra.jpg",
+            desc: "512GB nanoSim/eSim Space Black",
+            price: 1055,
+            manufacturerId: xiaomi.id
+        }
+    })
+    await db.product.create({
+        data: {
+            name: "Galaxy A55",
+            img: "/products/Galaxy A55.jpg.webp",
+            desc: "128GB nanoSim/eSim",
+            price: 540,
+            manufacturerId: samsung.id
         }
     })
 }

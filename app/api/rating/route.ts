@@ -57,6 +57,25 @@ export async function POST(req: NextRequest) {
             },
           });
         }
+        const productAllRatings = await db.rating.aggregate({
+          _avg: {
+            rating: true
+          },
+          where: {
+            productId: parsedBody.data.productId
+          },          
+        })
+        const rating = productAllRatings._avg.rating
+        if (rating) {
+          await db.product.update({
+            data: {
+              ratingAverage: rating
+            },
+            where: {
+              id: parsedBody.data.productId
+            }
+          })
+        }
       } catch (error) {
         return new Response("Wrong product ID", {
           status: 409,

@@ -11,21 +11,20 @@ type Props = {
 
 export default function ProductCard({product}: Props) {
   return (
-    <Card className="dark:hover:bg-slate-300 hover:bg-slate-300 transition-transform hover:-translate-y-1" key={product.id}>
-              <CardHeader>
+    <Card className="dark:hover:bg-slate-300 hover:bg-slate-300 transition-transform hover:-translate-y-1 relative py-24" key={product.id}>
+              <CardHeader className='absolute top-0'>
                 <CardTitle>{product.name}</CardTitle>
                 <CardDescription>{product.desc}</CardDescription>
               </CardHeader>
-              <CardContent>
+              {/* <CardContent className='absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2'>  */}
+              <CardContent className='flex flex-col justify-center'> 
                 <div className='relative h-60 lg:h-72'>
                   <Image
-                   src={product.img}
-                   alt={product.name}
-                  //  width={400}
-                  //  height={500}
-                  fill
-                  className='object-contain'
-                  sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                    src={product.img}
+                    alt={product.name}
+                    fill
+                    className='object-contain'
+                    sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
                    />
                 </div>
               </CardContent>
@@ -33,7 +32,7 @@ export default function ProductCard({product}: Props) {
                   <CardContent className='text-black font-bold border border-red-500 rounded inline-block p-2 m-2 lg:m-6 dark:text-white text-nowrap'>{product.price} $</CardContent>
                   <CardContent className='flex justify-end items-center'><RatingStars product={product} /></CardContent>
                 </CardContent>
-              <CardFooter className="flex justify-between">
+              <CardFooter className="flex justify-between absolute bottom-0">
                 <AddToCart product={product} />
               </CardFooter>
             </Card>
