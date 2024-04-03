@@ -5,8 +5,13 @@ import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 
-export default function Home() {
-
+export default function Home({
+  searchParams,
+}: {
+  searchParams?: {
+    manufacturer?: string;
+  };
+}) {
   const imageUrls = [
     "/banner1.png",
     "/banner2.webp",
@@ -20,7 +25,7 @@ export default function Home() {
     <>
       <SimpleSlider imageUrls={imageUrls}/>
       <Suspense fallback='Loading...'>
-        <Catalog/>
+        <Catalog searchParams={searchParams} />
       </Suspense>
     </>
   );
