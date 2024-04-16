@@ -12,9 +12,10 @@ type Props = {
 };
 
 export default function RatingStars({ product }: Props) {
-  const [rating, setRating] = useState<number | null>(null);
+  const [rating, setRating] = useState<number | null>(product.ratingAverage);
   const [hover, setHover] = useState<number | null>(null);
   const { mutate: addToRating } = useAddToRating();
+  const queryClient = useQueryClient();
 
   return (
     <div className="flex">
@@ -34,7 +35,7 @@ export default function RatingStars({ product }: Props) {
                 addToRating({
                   rating: currentRating,
                   productId: product.id,
-                });
+                })
               }}
               className={`cursor-pointer text-gray-400 ${getStarSize()}`}
               color={
